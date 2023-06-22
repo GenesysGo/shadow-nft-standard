@@ -1,0 +1,32 @@
+# Note: specifying inheritance is still necessary until cargo-sbf > 1.64 during `anchor test`
+cargo-features = ["workspace-inheritance"]
+
+[package]
+name = "shadow-nft-standard"
+version = "0.1.0"
+description = "Created with Anchor"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "shadow_nft_standard"
+
+[features]
+default = ["verbose", "use-token-2022"]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+verbose = ["num-format"]
+use-token-2022 = ["spl-token-2022"]
+
+[dependencies]
+anchor-lang = { workspace = true, features = ["init-if-needed"]}
+anchor-spl = { version = "0.27.0", default-features = false, features = ["token", "associated_token"] }
+bs58 = { version = "0.5.0", default-features = false, features = ["alloc"] }
+num-format = { version = "0.4.4", optional = true, default-features = false }
+sha2 = "0.10.6"
+shadow-nft-common.workspace = true
+spl-associated-token-account = { version = "1.1.3", features = ["no-entrypoint"] }
+spl-token-2022 = { version = "0.6.1", optional = true }
+strum = { version = "0.24.1", features = ["derive"] }
