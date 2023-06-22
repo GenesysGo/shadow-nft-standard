@@ -1,5 +1,5 @@
 //! This library is to be used to represent urls, extensions, and filepaths compactly.
-//! These use cases prohibit newline characters and are typically under 256 bytes.
+//! These use cases call for strings which are typically under 256 bytes.
 //! As such, we use a smaller length to avoid needing to ser/de a 4 or 8 byte length type.
 
 use shadow_nft_common::array_from_fn;
