@@ -3,6 +3,12 @@ import Link from "next/link"
 import { BN } from "@coral-xyz/anchor"
 import { ASSOCIATED_PROGRAM_ID } from "@coral-xyz/anchor/dist/cjs/utils/token"
 import {
+  PROGRAM_ID,
+  createMetadataAccount,
+} from "@genesysgo/shadow-nft-generated-client"
+import { UrlFields } from "@genesysgo/shadow-nft-generated-client/dist/src/shadowy-super-minter/types"
+import { ShadowDrive } from "@genesysgo/shadow-nft-generated-client/dist/src/shadowy-super-minter/types/Prefix"
+import {
   MINT_SIZE,
   TOKEN_2022_PROGRAM_ID,
   createInitializeMint2Instruction,
@@ -12,10 +18,6 @@ import {
 import { useConnection, useWallet } from "@solana/wallet-adapter-react"
 import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js"
 
-import { createMetadataAccount } from "@/lib/shadow-nft-standard/instructions"
-import { PROGRAM_ID } from "@/lib/shadow-nft-standard/programId"
-import { UrlFields } from "@/lib/shadow-nft-standard/types"
-import { ShadowDrive } from "@/lib/shadow-nft-standard/types/Prefix"
 import {
   fetchCollections,
   fetchGroups,

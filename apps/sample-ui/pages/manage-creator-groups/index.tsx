@@ -3,15 +3,13 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react"
 import { PublicKey, SystemProgram } from "@solana/web3.js"
 import { sha256 } from "js-sha256"
 
-import { CreatorGroup } from "@/lib/shadow-nft-standard/accounts/CreatorGroup"
-import { createGroup } from "@/lib/shadow-nft-standard/instructions"
-import { PROGRAM_ID } from "@/lib/shadow-nft-standard/programId"
 import { fetchGroups, hexToBytes, sendAndConfirmTx } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Spinner } from "@/components/ui/spinner"
 import { Toaster } from "@/components/ui/toaster"
 import { useToast } from "@/components/ui/use-toast"
+import { CreatorGroup, PROGRAM_ID, createGroup } from "@genesysgo/shadow-nft-generated-client"
 
 export default function IndexPage() {
   const { connection } = useConnection()

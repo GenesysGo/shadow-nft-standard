@@ -3,9 +3,6 @@ import * as anchor from "@coral-xyz/anchor"
 import { useConnection, useWallet } from "@solana/wallet-adapter-react"
 import { PublicKey, SystemProgram } from "@solana/web3.js"
 
-import { CreatorGroup } from "@/lib/shadow-nft-standard/accounts"
-import { createCollection } from "@/lib/shadow-nft-standard/instructions"
-import { PROGRAM_ID } from "@/lib/shadow-nft-standard/programId"
 import { fetchCollections, fetchGroups, sendAndConfirmTx } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -18,6 +15,7 @@ import {
 import { Spinner } from "@/components/ui/spinner"
 import { Toaster } from "@/components/ui/toaster"
 import { useToast } from "@/components/ui/use-toast"
+import { CreatorGroup, PROGRAM_ID, createCollection } from "@genesysgo/shadow-nft-generated-client"
 
 export default function CreateCollectionPage() {
   const [name, setName] = useState("")
