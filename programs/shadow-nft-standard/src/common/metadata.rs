@@ -3,7 +3,7 @@ use anchor_lang::prelude::*;
 use super::url::Url;
 
 #[account]
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Metadata {
     /// The spl-token-2022 mint address of the token associated with the NFT
     pub mint: Pubkey,

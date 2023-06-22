@@ -4,6 +4,7 @@ use anchor_lang::prelude::*;
 pub(crate) const MAX_GROUP_SIZE: usize = 8;
 
 #[account]
+#[derive(Debug, PartialEq)]
 pub struct CreatorGroup {
     /// Number of signatures collected
     pub sigs: u8,
