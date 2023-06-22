@@ -20,6 +20,9 @@ use crate::{errors::ShadowyError, state::ShadowySuperMinter};
 /// 4) If using an existing collection, ensure it belongs to the creator group. Otherwise, initialize it.
 /// 5) Initialize mint info (for now this is just a `UniformMint`, but is made modular to allow for future changes)
 /// 6) Initialize a `ZeroCopyBitSlice` to be used for pseudo-random asset selection at mint time.
+///
+/// If using a multimember group with a pre-initialized `for_minter` collection, only one creator signer
+/// is required since all members signed off on the collection knowing it would be used with a minter.
 pub fn initialize<'b>(
     ctx: Context<'_, '_, '_, 'b, Initialize<'b>>,
     args: InitializeArgs,
@@ -237,6 +240,8 @@ pub struct Initialize<'info> {
     #[account(mut)]
     pub creator_group: UncheckedAccount<'info>,
 
+    /// If using a multimember group with a pre-initialized `for_minter` collection, only one creator signer
+    /// is required since all members signed off on the collection knowing it would be used with a minter.
     #[account(mut)]
     pub payer_creator: Signer<'info>,
 
