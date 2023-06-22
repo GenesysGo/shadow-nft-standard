@@ -1,0 +1,23 @@
+[features]
+seeds = false
+skip-lint = false
+
+[programs.localnet]
+shadow_nft_standard = "9fQse1hBRfzWweeUod6WEsR4jZf7hVucetEheCaWooY5"
+shadowy_super_minter = "AzCnwh6WUTNmwn1GAF7VP3bnP6VxHCcgP3iWzgmwAxUu"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "Localnet"
+wallet = "~/.config/solana/id.json"
+
+[scripts]
+test = "cargo test --release -- --nocapture"
+
+[test.validator]
+url = "https://api.mainnet-beta.solana.com"
+
+[[test.validator.clone]]
+address = "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb" # token-2022

@@ -1,0 +1,12 @@
+# Note: specifying inheritance is still necessary until cargo-sbf > 1.64 during `anchor test`
+cargo-features = ["workspace-inheritance"]
+
+[package]
+name = "shadow-nft-common"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anchor-lang.workspace = true

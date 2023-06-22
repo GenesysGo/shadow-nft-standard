@@ -1,0 +1,17 @@
+# Note: specifying inheritance is still necessary until cargo-sbf > 1.64 during `anchor test`
+cargo-features = ["workspace-inheritance"]
+
+[package]
+name = "shadow-nft-sdk"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+shadow-nft-standard = { workspace = true, features = ["no-entrypoint"]}
+shadowy-super-minter = { workspace = true, features = ["no-entrypoint"]}
+shadow-nft-common.workspace = true
+solana-client = "=1.14.18"
+solana-sdk.workspace = true
+spl-associated-token-account = "1.1.3"

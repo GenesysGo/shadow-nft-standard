@@ -1,0 +1,16 @@
+# Note: specifying inheritance is still necessary until cargo-sbf > 1.64 during `anchor test`
+cargo-features = ["workspace-inheritance"]
+
+[package]
+name = "zerocopy-bitslice"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+default = ["choose-random-zero", "std"]
+std = []
+choose-random-zero = ["std", "sha2"]
+
+[dependencies]
+sha2 = { version = "0.10.6", optional = true }
+shadow-nft-common.workspace = true
