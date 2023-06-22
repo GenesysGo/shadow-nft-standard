@@ -1,7 +1,8 @@
 import "@/styles/globals.css"
-import { useMemo } from "react"
+import { useEffect, useMemo } from "react"
 import { Metadata } from "next"
 import type { AppProps } from "next/app"
+import { useRouter } from "next/router"
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base"
 import {
   ConnectionProvider,
@@ -20,6 +21,7 @@ import {
   TorusWalletAdapter,
 } from "@solana/wallet-adapter-wallets"
 import { clusterApiUrl } from "@solana/web3.js"
+import * as Fathom from "fathom-client"
 import { DefaultSeo } from "next-seo"
 
 import { siteConfig } from "@/config/site"
@@ -31,6 +33,26 @@ import { ThemeProvider } from "@/components/theme-provider"
 export default function App({ Component, pageProps }: AppProps) {
   // const network = WalletAdapterNetwork.Mainnet
   // const endpoint = useMemo(() => clusterApiUrl(network), [network])
+
+  const router = useRouter()
+
+  useEffect(() => {
+    Fathom.load(process.env.NEXT_PUBLIC_FATHOM_ID!, {
+      includedDomains: ["sample-nft-ui.shadow.cloud"],
+    })
+
+    function onRouteChangeComplete() {
+      Fathom.trackPageview()
+    }
+
+    // Record a pageview when route changes
+    router.events.on("routeChangeComplete", onRouteChangeComplete)
+
+    // Unassign event listener
+    return () => {
+      router.events.off("routeChangeComplete", onRouteChangeComplete)
+    }
+  }, [])
 
   const endpoint =
     process.env.NEXT_PUBLIC_RPC_URL || "https://api.mainnet-beta.solana.com"
