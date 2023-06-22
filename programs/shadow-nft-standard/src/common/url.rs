@@ -1,10 +1,21 @@
 use std::{fmt::Display, ops::Add, str::FromStr};
 
 use anchor_lang::prelude::*;
+use serde::{Deserialize, Serialize};
 use strum::{EnumIter, IntoStaticStr};
 
 /// The common prefix of a `Url`. This is separated since a minter will hold a common prefix.
-#[derive(AnchorSerialize, AnchorDeserialize, PartialEq, Debug, Clone, EnumIter, IntoStaticStr)]
+#[derive(
+    AnchorSerialize,
+    AnchorDeserialize,
+    PartialEq,
+    Debug,
+    Clone,
+    EnumIter,
+    IntoStaticStr,
+    Serialize,
+    Deserialize,
+)]
 #[repr(u8)]
 pub enum Prefix {
     ShadowDrive { account: Pubkey },
@@ -25,7 +36,7 @@ impl Prefix {
     }
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, Debug, Clone, PartialEq)]
+#[derive(AnchorSerialize, AnchorDeserialize, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Url {
     pub prefix: Prefix,
     pub object: String,
