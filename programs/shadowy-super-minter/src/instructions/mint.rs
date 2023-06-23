@@ -200,6 +200,7 @@ pub fn mint(ctx: Context<Mint>) -> Result<()> {
         system_program: ctx.accounts.system_program.to_account_info(),
         minter_ata: ctx.accounts.minter_ata.to_account_info(),
         associated_token_program: ctx.accounts.associated_token_program.to_account_info(),
+        collection: ctx.accounts.collection.to_account_info(),
     };
 
     let cpi_program = ctx.accounts.shadow_nft_standard.to_account_info();

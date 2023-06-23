@@ -20,7 +20,7 @@ use {
 };
 
 use crate::{
-    common::{check_ata, metadata::Metadata},
+    common::{check_ata, collection::Collection, metadata::Metadata},
     error::ErrorCode,
     verbose_msg,
 };
@@ -51,12 +51,12 @@ pub fn handle_mint(ctx: Context<MintNFT>, cost_lamports: u64) -> Result<()> {
     invoke(
         &system_instruction::transfer(
             &ctx.accounts.minter.key(),
-            &ctx.accounts.metadata.key(),
+            &ctx.accounts.collection.key(),
             cost_lamports,
         ),
         &[
             ctx.accounts.minter.to_account_info(),
-            ctx.accounts.metadata.to_account_info(),
+            ctx.accounts.collection.to_account_info(),
             ctx.accounts.system_program.to_account_info(),
         ],
     )?;
@@ -101,6 +101,12 @@ pub struct MintNFT<'info> {
 
     #[account(mut)]
     pub asset_mint: Account<'info, Mint>,
+
+    #[account(
+        mut,
+        constraint = collection.key() == metadata.collection_key,
+    )]
+    pub collection: Account<'info, Collection>,
 
     pub token_program: Program<'info, Token>,
     pub associated_token_program: Program<'info, AssociatedToken>,

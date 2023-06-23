@@ -26,6 +26,8 @@ use shadow_nft_standard::{
     },
 };
 
+const MINT_COST: u64 = LAMPORTS_PER_SOL / 10;
+
 pub async fn create_creator_group<const C: usize>(
 ) -> Result<(Test, [User; C], Pubkey), Box<dyn Error>> {
     assert!(C > 0, "need at least one creator");
@@ -280,8 +282,8 @@ pub async fn create_meta_unit<const C: usize>(
 
 pub async fn mint_unit<const C: usize>(
     initially_mutable: bool,
-) -> Result<(Test, [User; C], User, Pubkey, Keypair), Box<dyn Error>> {
-    let Ok((test, creators, _creator_group, _collection, mint_keypair)) = create_meta_unit::<C>(initially_mutable, ).await else {
+) -> Result<(Test, [User; C], User, Pubkey, Pubkey, Pubkey, Keypair), Box<dyn Error>> {
+    let Ok((test, creators, creator_group, collection, mint_keypair)) = create_meta_unit::<C>(initially_mutable, ).await else {
         panic!("create metadata unit test failed");
     };
 
@@ -303,7 +305,7 @@ pub async fn mint_unit<const C: usize>(
         .program
         .request()
         .args(shadow_nft_standard::instruction::MintNft {
-            cost_lamports: LAMPORTS_PER_SOL / 10,
+            cost_lamports: MINT_COST,
         })
         .accounts(shadow_nft_standard::accounts::MintNFT {
             metadata: metadata_pda,
@@ -313,6 +315,7 @@ pub async fn mint_unit<const C: usize>(
             token_program: spl_token_used::ID,
             associated_token_program: associated_token::ID,
             system_program: system_program::ID,
+            collection,
         })
         .instructions()?
         .remove(0);
@@ -336,7 +339,15 @@ pub async fn mint_unit<const C: usize>(
     let minter_ata_balance = test.rpc.get_token_account_balance(&minter_ata).await?;
     assert_eq!(minter_ata_balance.amount.parse::<u64>()?, 1);
 
-    Ok((test, creators, minter_user, minter_ata, mint_keypair))
+    Ok((
+        test,
+        creators,
+        minter_user,
+        minter_ata,
+        creator_group,
+        collection,
+        mint_keypair,
+    ))
 }
 
 pub async fn update_unit<const C: usize>(initially_mutable: bool) -> Result<(), Box<dyn Error>> {
@@ -398,7 +409,7 @@ pub async fn update_unit<const C: usize>(initially_mutable: bool) -> Result<(), 
 }
 
 pub async fn burn_unit<const C: usize>(initially_mutable: bool) -> Result<(), Box<dyn Error>> {
-    let (test, ___creators, user, user_ata, mint_keypair) =
+    let (test, ___creators, user, user_ata, _creator_group, _collection, mint_keypair) =
         mint_unit::<C>(initially_mutable).await?;
 
     let metadata_pda = Metadata::derive_pda(&mint_keypair.pubkey());
@@ -435,39 +446,105 @@ pub async fn burn_unit<const C: usize>(initially_mutable: bool) -> Result<(), Bo
     Ok(())
 }
 
+pub async fn withdraw_unit<const C: usize>(initially_mutable: bool) -> Result<(), Box<dyn Error>> {
+    let (test, creators, _user, _user_ata, creator_group, collection, _mint_keypair) =
+        mint_unit::<C>(initially_mutable).await?;
+
+    let mut accounts = shadow_nft_standard::accounts::Withdraw {
+        payer_creator: creators[0].pubkey(),
+        collection,
+        creator_group,
+    }
+    .to_account_metas(None);
+    for creator in creators.iter().skip(1) {
+        accounts.push(solana_sdk::instruction::AccountMeta {
+            pubkey: creator.pubkey(),
+            is_signer: false,
+            is_writable: true,
+        })
+    }
+    let withdraw_ix = test
+        .program
+        .request()
+        .args(shadow_nft_standard::instruction::Withdraw {})
+        .accounts(accounts)
+        .instructions()?
+        .remove(0);
+
+    let transaction = Transaction::new_signed_with_payer(
+        &[withdraw_ix],
+        Some(&creators[0].pubkey()),
+        &[&creators[0].keypair],
+        test.blockhash().await?,
+    );
+    let pre_collection_balance = test.rpc.get_balance(&collection).await?;
+    let pre_creator_balance = test.rpc.get_balance(&creators[0].pubkey()).await?;
+    let mut pre_others = Vec::with_capacity(C - 1);
+    for c in creators.iter().skip(1) {
+        pre_others.push(test.rpc.get_balance(&c.pubkey()).await?);
+    }
+    if let Err(e) = test.rpc.send_and_confirm_transaction(&transaction).await {
+        panic!("{e:#?}");
+    };
+    let post_collection_balance = test.rpc.get_balance(&collection).await?;
+    let post_creator_balance = test.rpc.get_balance(&creators[0].pubkey()).await?;
+    let mut post_others = Vec::with_capacity(C - 1);
+    for c in creators.iter().skip(1) {
+        post_others.push(test.rpc.get_balance(&c.pubkey()).await?);
+    }
+    let remainder = MINT_COST - (MINT_COST / C as u64) * C as u64;
+    assert_eq!(
+        post_creator_balance,
+        pre_creator_balance + MINT_COST / C as u64 - 5000 + remainder
+    );
+    for (post_other, pre_other) in post_others.into_iter().zip(pre_others) {
+        assert_eq!(post_other, pre_other + MINT_COST / C as u64);
+    }
+    assert_eq!(post_collection_balance, pre_collection_balance - MINT_COST);
+
+    Ok(())
+}
+
 #[allow(unused)] // only used for testing
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn test_create_metadata_1() -> Result<(), Box<dyn Error>> {
     drop(create_meta_unit::<1>(true).await?);
-
     Ok(())
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn test_create_metadata_2_multisig() -> Result<(), Box<dyn Error>> {
     drop(create_meta_unit::<2>(true).await?);
+    Ok(())
+}
 
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn test_create_metadata_3_multisig() -> Result<(), Box<dyn Error>> {
+    drop(create_meta_unit::<3>(true).await?);
     Ok(())
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn test_mint_1() -> Result<(), Box<dyn Error>> {
     drop(mint_unit::<1>(true).await?);
-
     Ok(())
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn test_mint_2_multisig() -> Result<(), Box<dyn Error>> {
     drop(mint_unit::<2>(true).await?);
+    Ok(())
+}
 
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn test_mint_3_multisig() -> Result<(), Box<dyn Error>> {
+    drop(mint_unit::<3>(true).await?);
     Ok(())
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn test_update_1() -> Result<(), Box<dyn Error>> {
     update_unit::<1>(true).await?;
-
     Ok(())
 }
 
@@ -478,13 +555,42 @@ async fn test_update_2_multisig() -> Result<(), Box<dyn Error>> {
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn test_update_3_multisig() -> Result<(), Box<dyn Error>> {
+    update_unit::<3>(true).await?;
+    Ok(())
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn test_burn_1() -> Result<(), Box<dyn Error>> {
     burn_unit::<1>(true).await?;
-
     Ok(())
 }
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn test_burn_2_multisig() -> Result<(), Box<dyn Error>> {
     burn_unit::<2>(true).await?;
+    Ok(())
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn test_burn_3_multisig() -> Result<(), Box<dyn Error>> {
+    burn_unit::<3>(true).await?;
+    Ok(())
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn test_withdraw_1() -> Result<(), Box<dyn Error>> {
+    withdraw_unit::<1>(true).await?;
+    Ok(())
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn test_withdraw_2_multisig() -> Result<(), Box<dyn Error>> {
+    withdraw_unit::<2>(true).await?;
+    Ok(())
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn test_withdraw_3_multisig() -> Result<(), Box<dyn Error>> {
+    withdraw_unit::<3>(true).await?;
     Ok(())
 }

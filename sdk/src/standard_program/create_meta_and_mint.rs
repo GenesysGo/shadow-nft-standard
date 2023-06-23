@@ -61,6 +61,7 @@ pub fn create_meta_and_mint<S: Signer>(
     let accounts = MintNftAccounts {
         metadata,
         minter: signer.deref().pubkey(),
+        collection,
         minter_ata: spl_associated_token_account::get_associated_token_address_with_program_id(
             &signer.deref().pubkey(),
             &asset_mint.pubkey(),

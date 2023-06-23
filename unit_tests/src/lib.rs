@@ -25,7 +25,12 @@ pub fn setup(devkey: impl AsRef<Path>, cluster: Cluster, program: Pubkey) -> Tes
         read_keypair_file(devkey.as_ref())
             .unwrap_or_else(|_| panic!("invalid dev_key: {}", devkey.as_ref().display())),
     );
-    let rpc = RpcClient::new(cluster.url().to_string());
+    let rpc = RpcClient::new_with_commitment(
+        cluster.url().to_string(),
+        anchor_client::solana_sdk::commitment_config::CommitmentConfig {
+            commitment: anchor_client::solana_sdk::commitment_config::CommitmentLevel::Processed,
+        },
+    );
     let client = Client::new(cluster, Arc::clone(&devkey));
     let program = client.program(program);
 

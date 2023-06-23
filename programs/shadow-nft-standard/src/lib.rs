@@ -4,7 +4,9 @@ pub mod common;
 pub mod error;
 pub mod instructions;
 
-use instructions::{burn::*, create::*, create_collection::*, create_group::*, mint::*, update::*};
+use instructions::{
+    burn::*, create::*, create_collection::*, create_group::*, mint::*, update::*, withdraw::*,
+};
 
 declare_id!(shadow_nft_common::STANDARD_PROGRAM);
 
@@ -39,6 +41,11 @@ pub mod shadow_nft_standard {
     // Instruction to create a `CreatorGroup`. Required for creating a collection.
     pub fn create_group(ctx: Context<CreateGroup>, args: CreateGroupArgs) -> Result<()> {
         handle_create_group(ctx, args)
+    }
+
+    // Instruction to withdraw fees from a `Collection` after a mint occurs.
+    pub fn withdraw<'a>(ctx: Context<'_, '_, '_, 'a, Withdraw<'a>>) -> Result<()> {
+        handle_withdraw(ctx)
     }
 
     // Instruction to create a `Collection`. A `CreatorGroup` must be initialized.
