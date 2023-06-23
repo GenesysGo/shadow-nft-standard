@@ -1,10 +1,9 @@
+import { Metadata, PROGRAM_ID } from "@genesysgo/shadow-nft-generated-client"
 import { TOKEN_2022_PROGRAM_ID } from "@solana/spl-token"
 import { AccountInfo, ParsedAccountData, PublicKey } from "@solana/web3.js"
 import chunks from "lodash.chunk"
 import orderBy from "lodash.orderby"
 
-import { Metadata } from "./shadow-nft-standard/accounts/Metadata"
-import { PROGRAM_ID } from "./shadow-nft-standard/programId"
 import { reconstructUrlFromChainData } from "./utils"
 
 export type StringPublicKey = string
