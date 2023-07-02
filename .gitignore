@@ -21,3 +21,6 @@ node_module
 
 #adding dev keypair in gitignore
 dev.json
+
+#adding test ledger folder to gitignore
+test-ledger/*
