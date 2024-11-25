@@ -1191,6 +1191,14 @@
     bn.js "^5.1.2"
     buffer-layout "^1.2.0"
 
+"@coral-xyz/borsh@^0.28.0":
+  version "0.28.0"
+  resolved "https://registry.yarnpkg.com/@coral-xyz/borsh/-/borsh-0.28.0.tgz#fa368a2f2475bbf6f828f4657f40a52102e02b6d"
+  integrity sha512-/u1VTzw7XooK7rqeD7JLUSwOyRSesPUk0U37BV9zK0axJc1q0nRbKFGFLYCQ16OtdOJTTwGfGp11Lx9B45bRCQ==
+  dependencies:
+    bn.js "^5.1.2"
+    buffer-layout "^1.2.0"
+
 "@emotion/babel-plugin@^11.11.0":
   version "11.11.0"
   resolved "https://registry.npmjs.org/@emotion/babel-plugin/-/babel-plugin-11.11.0.tgz"
@@ -1370,6 +1378,16 @@
     "@fractalwagmi/popup-connection" "^1.0.18"
     "@solana/wallet-adapter-base" "^0.9.17"
     bs58 "^5.0.0"
+
+"@genesysgo/shadow-nft-generated-client@1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@genesysgo/shadow-nft-generated-client/-/shadow-nft-generated-client-1.0.1.tgz#acd34a20475541037d590552ac97a76c16e8831e"
+  integrity sha512-Yoywu6tU/33biSabbV9KNHHiSmZAO+oobA4SV0MnWXiRJ2kMnj8P8M3eibTYqiawv7isYDdlFvFrn3yin2u2RQ==
+  dependencies:
+    "@coral-xyz/borsh" "^0.28.0"
+    "@solana/web3.js" "^1.77.3"
+    bn.js "^5.2.1"
+    rimraf "^3.0.2"
 
 "@headlessui/react@^1.7.15":
   version "1.7.15"
@@ -2593,7 +2611,7 @@
     "@wallet-standard/app" "^1.0.1"
     "@wallet-standard/base" "^1.0.1"
 
-"@solana/web3.js@^1.32.0", "@solana/web3.js@^1.36.0", "@solana/web3.js@^1.44.3", "@solana/web3.js@^1.63.1", "@solana/web3.js@^1.68.0":
+"@solana/web3.js@^1.32.0", "@solana/web3.js@^1.36.0", "@solana/web3.js@^1.44.3", "@solana/web3.js@^1.63.1", "@solana/web3.js@^1.68.0", "@solana/web3.js@^1.77.3":
   version "1.77.3"
   resolved "https://registry.npmjs.org/@solana/web3.js/-/web3.js-1.77.3.tgz"
   integrity sha512-PHaO0BdoiQRPpieC1p31wJsBaxwIOWLh8j2ocXNKX8boCQVldt26Jqm2tZE4KlrvnCIV78owPLv1pEUgqhxZ3w==
@@ -3649,7 +3667,7 @@ bn.js@^4.0.0, bn.js@^4.1.0, bn.js@^4.11.9:
   resolved "https://registry.npmjs.org/bn.js/-/bn.js-4.12.0.tgz"
   integrity sha512-c98Bf3tPniI+scsdk237ku1Dc3ujXQTSgyiPUDEOe7tRkhrqridvh8klBv0HCEso1OLOYcHuCv/cS6DNxKH+ZA==
 
-bn.js@^5.0.0, bn.js@^5.1.1, bn.js@^5.1.2, bn.js@^5.2.0:
+bn.js@^5.0.0, bn.js@^5.1.1, bn.js@^5.1.2, bn.js@^5.2.0, bn.js@^5.2.1:
   version "5.2.1"
   resolved "https://registry.npmjs.org/bn.js/-/bn.js-5.2.1.tgz"
   integrity sha512-eXRvHzWyYPBuB4NBy0cmYQjGitUrtqwbvlzP3G6VFnNRbsZQIxQ10PbKKHt8gZ/HW/D/747aDl+QkDqg3KQLMQ==

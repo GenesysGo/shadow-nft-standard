@@ -4,6 +4,11 @@ import Link from "next/link"
 import * as anchor from "@coral-xyz/anchor"
 import { ASSOCIATED_PROGRAM_ID } from "@coral-xyz/anchor/dist/cjs/utils/token"
 import {
+  MINTER_PROGRAM_ID,
+  PROGRAM_ID,
+  mint,
+} from "@genesysgo/shadow-nft-generated-client"
+import {
   TOKEN_2022_PROGRAM_ID,
   getAssociatedTokenAddressSync,
 } from "@solana/spl-token"
@@ -15,9 +20,6 @@ import {
   SystemProgram,
 } from "@solana/web3.js"
 
-import { PROGRAM_ID } from "@/lib/shadow-nft-standard/programId"
-import { mint } from "@/lib/shadowy-super-minter/instructions"
-import { PROGRAM_ID as MINTER_PROGRAM_ID } from "@/lib/shadowy-super-minter/programId"
 import { sendAndConfirmTx } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {

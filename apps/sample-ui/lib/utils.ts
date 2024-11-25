@@ -1,11 +1,10 @@
 import * as anchor from "@coral-xyz/anchor"
 import { Program } from "@coral-xyz/anchor"
+import { PROGRAM_ID } from "@genesysgo/shadow-nft-generated-client"
 import { AnchorWallet } from "@solana/wallet-adapter-react"
 import { PublicKey, Transaction, TransactionInstruction } from "@solana/web3.js"
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-
-import { PROGRAM_ID } from "@/lib/shadow-nft-standard/programId"
 
 import { ShadowNftStandard, IDL as StandardIDL } from "./standard-idl"
 
