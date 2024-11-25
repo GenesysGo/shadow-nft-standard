@@ -15,14 +15,6 @@ use crate::{
 /// before initializing the `CreatorGroup` value. This should be done regardless
 /// of `multisig`.
 pub fn handle_create_group(ctx: Context<CreateGroup>, args: CreateGroupArgs) -> Result<()> {
-    // Check that remaining accounts are all system accounts
-    for account in ctx.remaining_accounts {
-        if *account.owner != System::id() {
-            verbose_msg!("A non-SystemAccount was passed in as a creator");
-            return Err(ErrorCode::CreatorMustBeSystemAccount.into());
-        }
-    }
-
     // Gather signing creator
     let mut creators = Vec::with_capacity(1 + ctx.remaining_accounts.len());
     creators.push(ctx.accounts.creator.key());

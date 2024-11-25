@@ -15,3 +15,12 @@ Cargo.lock
 .next
 .vercel
 node_module
+
+#ignore .anchor folder
+.anchor/*
+
+#adding dev keypair in gitignore
+dev.json
+
+#adding test ledger folder to gitignore
+test-ledger/*

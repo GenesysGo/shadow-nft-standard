@@ -29,9 +29,6 @@ pub enum ErrorCode {
     #[msg("Attempted to create a group which exceeds the maximum number of members")]
     ExceedsMaxGroupSize,
 
-    #[msg("A creator must be a system account")]
-    CreatorMustBeSystemAccount,
-
     #[msg("A creator was not present for a multisig operation")]
     CreatorNotPresentForMultisig,
 
